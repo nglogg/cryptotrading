@@ -15,7 +15,7 @@ public class CryptoPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String cryptoPair;
+    private String symbol;
     private BigDecimal bidPrice;
     private BigDecimal askPrice;
     private LocalDateTime lastUpdated;

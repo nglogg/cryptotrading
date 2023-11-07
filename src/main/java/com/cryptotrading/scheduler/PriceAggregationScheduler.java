@@ -28,7 +28,7 @@ public class PriceAggregationScheduler {
 
         // Update the price in the database (you need to inject a repository to do this)
         CryptoPrice cryptoPrice = new CryptoPrice();
-        cryptoPrice.setCryptoPair("ETHUSDT");
+        cryptoPrice.setSymbol("ETHUSDT");
         cryptoPrice.setBidPrice(bestBid);
         cryptoPrice.setAskPrice(bestAsk);
         cryptoPrice.setLastUpdated(LocalDateTime.now());

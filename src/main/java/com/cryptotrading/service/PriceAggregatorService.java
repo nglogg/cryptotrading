@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -26,12 +25,11 @@ public class PriceAggregatorService {
     public void aggregatePrices() {
         CompletableFuture<BinancePrice> binancePriceFuture = fetchBinancePrice();
         CompletableFuture<HoubiPrice> huobiPriceFuture = fetchHuobiPrice();
-
         CompletableFuture.allOf(binancePriceFuture, huobiPriceFuture).join();
 
         try {
-            Price binancePrice = binancePriceFuture.get();
-            Price huobiPrice = huobiPriceFuture.get();
+            BinancePrice binancePrice = binancePriceFuture.get();
+            HoubiPrice huobiPrice = huobiPriceFuture.get();
 
             // Here you would have logic to compare prices and store the best one.
             // For now, let's assume we just save them both.

@@ -1,0 +1,11 @@
+# application-prod.yml - configurations for production environment
+spring:
+  datasource:
+    url: jdbc:mysql://<host>:<port>/<dbname>
+    username: <username>
+    password: <password>
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  # Other production-specific configurations

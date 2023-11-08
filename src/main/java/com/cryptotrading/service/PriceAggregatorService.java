@@ -1,67 +1,44 @@
 package com.cryptotrading.service;
-import com.cryptotrading.model.BinancePrice;
-import com.cryptotrading.model.HoubiPrice;
-import com.cryptotrading.repository.BinancePriceRepository;
-import com.cryptotrading.repository.HoubiPriceRepository;
+
+import com.cryptotrading.parser.PriceParser;
+import com.cryptotrading.model.CryptoPrice;
+import com.cryptotrading.repository.CryptoPriceRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class PriceAggregatorService {
 
-    private final RestTemplate restTemplate;
-    private final HoubiPriceRepository houbiPriceRepository;
-    private final BinancePriceRepository binancePriceRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final CryptoPriceRepository cryptoPriceRepository;
+    private final PriceParser priceParser;
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedRate = 10000)
     public void aggregatePrices() {
-        CompletableFuture<BinancePrice> binancePriceFuture = fetchBinancePrice();
-        CompletableFuture<HoubiPrice> huobiPriceFuture = fetchHuobiPrice();
-        CompletableFuture.allOf(binancePriceFuture, huobiPriceFuture).join();
-
         try {
-            BinancePrice binancePrice = binancePriceFuture.get();
-            HoubiPrice huobiPrice = huobiPriceFuture.get();
+            // Fetch prices from Binance
+            String binanceResponse = restTemplate.getForObject("https://api.binance.com/api/v3/ticker/bookTicker", String.class);
+            CryptoPrice binancePrice = priceParser.parseBinanceResponse(binanceResponse);
 
-            // Here you would have logic to compare prices and store the best one.
-            // For now, let's assume we just save them both.
-            binancePriceRepository.save(binancePrice);
-            houbiPriceRepository.save(huobiPrice);
+            // Fetch prices from Huobi
+            String huobiResponse = restTemplate.getForObject("https://api.huobi.pro/market/tickers", String.class);
+            CryptoPrice huobiPrice = priceParser.parseHuobiResponse(huobiResponse);
 
-        } catch (InterruptedException | ExecutionException e) {
-            // Proper error handling should be here
+            // Compare the prices and store the best in the database
+            CryptoPrice bestPrice = priceParser.comparePrices(binancePrice, huobiPrice);
+
+            cryptoPriceRepository.save(bestPrice);
+        } catch (IOException e) {
+            // Handle your errors here
             e.printStackTrace();
         }
     }
 
-    public CompletableFuture<BinancePrice> fetchBinancePrice() {
-        return CompletableFuture.supplyAsync(() -> {
-            String binanceApiUrl = "https://api.binance.com/api/v3/ticker/bookTicker";
-            // Fetch the data from Binance
-            // For this example, we just create a dummy Price object
-            BinancePrice price = restTemplate.getForObject(binanceApiUrl, BinancePrice.class);
-            log.info("fetch Binance Price: {}", price);
-            return price != null ? price : new BinancePrice();
-        });
-    }
-
-    public CompletableFuture<HoubiPrice> fetchHuobiPrice() {
-        return CompletableFuture.supplyAsync(() -> {
-            String huobiApiUrl = "https://api.huobi.pro/market/tickers";
-            // Fetch the data from Huobi
-            // For this example, we just create a dummy Price object
-            HoubiPrice price = restTemplate.getForObject(huobiApiUrl, HoubiPrice.class);
-            log.info("fetch Houbi Price: {}", price);
-            return price != null ? price : new HoubiPrice();
-        });
-    }
+    // ... rest of the class
 }
 

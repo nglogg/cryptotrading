@@ -18,7 +18,7 @@ public class Transaction {
     private Long userId;
 
     @Column(nullable = false)
-    private String cryptoSymbol;
+    private CryptoType type;
 
     @Column(nullable = false)
     private BigDecimal amount;

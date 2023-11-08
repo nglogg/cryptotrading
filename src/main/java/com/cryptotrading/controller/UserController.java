@@ -3,6 +3,7 @@ package com.cryptotrading.controller;
 import com.cryptotrading.mapper.TradeRequestMapper;
 import com.cryptotrading.model.Transaction;
 import com.cryptotrading.model.User;
+import com.cryptotrading.model.Wallet;
 import com.cryptotrading.model.dto.TradeRequestDto;
 import com.cryptotrading.service.TradingService;
 import com.cryptotrading.service.UserService;
@@ -23,9 +24,9 @@ public class UserController {
     private final TradeRequestMapper tradeRequestMapper;
 
     @GetMapping("/{userId}/wallet/balances")
-    public ResponseEntity<User> getWalletBalances(@PathVariable("userId") String userId) {
-        User user = userService.getWalletBalances(Long.valueOf(userId));
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<Wallet> getWalletBalances(@PathVariable("userId") String userId) {
+        Wallet wallets = userService.getWalletBalances(userId);
+        return new ResponseEntity<>(wallets, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/transactions")

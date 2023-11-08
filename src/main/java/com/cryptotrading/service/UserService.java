@@ -2,8 +2,10 @@ package com.cryptotrading.service;
 
 import com.cryptotrading.model.Transaction;
 import com.cryptotrading.model.User;
+import com.cryptotrading.model.Wallet;
 import com.cryptotrading.repository.TransactionRepository;
 import com.cryptotrading.repository.UserRepository;
+import com.cryptotrading.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +15,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
 
     private final TransactionRepository transactionRepository;
-    public User getWalletBalances(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public Wallet getWalletBalances(String userId) {
+        Optional<Wallet> user = walletRepository.findFirstByUserIdOrderByTimestampDesc(userId);
         return user.get();
     }
     public Transaction getTransactions(Long userId) {

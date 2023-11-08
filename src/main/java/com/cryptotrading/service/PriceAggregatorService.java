@@ -26,11 +26,11 @@ public class PriceAggregatorService {
         try {
             log.info("retrieve the pricing from the Binance and Houbi");
             // Fetch prices from Binance
-            String binanceResponse = restTemplate.getForObject("https://api.binance.com/api/v3/ticker/bookTicker", String.class);
+            String binanceResponse = restTemplate.getForObject("${spring.services.binance.url}", String.class);
             List<CryptoPrice> binancePrice = priceParser.parseBinanceResponse(binanceResponse);
             log.info("Price were gotten from Binance: {}", binancePrice);
             // Fetch prices from Huobi
-            String huobiResponse = restTemplate.getForObject("https://api.huobi.pro/market/tickers", String.class);
+            String huobiResponse = restTemplate.getForObject("${spring.services.huobi.url}", String.class);
             List<CryptoPrice> huobiPrice = priceParser.parseHuobiResponse(huobiResponse);
             log.info("Price were gotten from Houbi: {}", huobiPrice);
 

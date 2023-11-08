@@ -1,16 +1,15 @@
 package com.cryptotrading.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "users", indexes = {
         @Index(name = "idx_guid", columnList = "guid"),
 })
@@ -25,6 +24,7 @@ public class User {
     private String username;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Wallet> wallets;
 }
 

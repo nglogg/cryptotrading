@@ -1,16 +1,21 @@
 package com.cryptotrading.controller;
 
 import com.cryptotrading.mapper.TradeRequestMapper;
+import com.cryptotrading.model.CryptoType;
 import com.cryptotrading.model.Transaction;
 import com.cryptotrading.model.User;
 import com.cryptotrading.model.Wallet;
 import com.cryptotrading.model.dto.TradeRequestDto;
 import com.cryptotrading.service.TradingService;
 import com.cryptotrading.service.UserService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -23,7 +28,7 @@ public class UserController {
 
     private final TradeRequestMapper tradeRequestMapper;
 
-    @GetMapping("/{userId}/wallet/balances")
+    @GetMapping("/{userId}/wallets/balances")
     public ResponseEntity<Wallet> getWalletBalances(@PathVariable("userId") String userId) {
         return userService.getWalletBalances(userId)
                 .map(ResponseEntity::ok)

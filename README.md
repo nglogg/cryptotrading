@@ -19,7 +19,7 @@ This document outlines the implementation details of a crypto trading system dev
 1. **Spring Profiles:**
     -  Utilize Spring Profiles to separate configuration for different environments (dev, test, prod).
 2. **Validation**
-    - Apply input validation using @Valid and Hibernate Validator annotations in your DTOs to ensure the data integrity of the requests.
+    - Apply input validation using @Valid and Hibernate Validator annotations in  DTOs to ensure the data integrity of the requests.
 3. **Database Optimizations**
     - Use JPA/Hibernate optimizations such as lazy loading, batch fetching, and query tuning to enhance performance with the in-memory database.
 4. **Transaction Management**
@@ -30,6 +30,8 @@ This document outlines the implementation details of a crypto trading system dev
     - When calling external APIs, request only the data service need and process it efficiently to reduce memory and CPU overhead.
 7. **Layered Architecture**
     - Structure this service using the layered architecture (Controller, Service, Repository) to decouple the code and facilitate testing.
+8. **Error Handling**
+    - Apply global exception handling mechanism with @ControllerAdvice to handle exceptions and return proper HTTP responses.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.
 - Each user starts with a wallet balance of 50,000 USDT.

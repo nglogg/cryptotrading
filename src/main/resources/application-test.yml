@@ -1,3 +1,6 @@
+app:
+  aggregation:
+    interval: 1000000
 spring:
   config:
     activate:

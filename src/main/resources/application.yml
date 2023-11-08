@@ -3,6 +3,3 @@ spring:
     name: crypto-trading-system
   profiles:
     active: dev
-app:
-  aggregation:
-    interval: 10000

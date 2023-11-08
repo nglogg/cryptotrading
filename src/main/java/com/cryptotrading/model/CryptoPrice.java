@@ -3,7 +3,7 @@ package com.cryptotrading.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "crypto_prices")
 @AllArgsConstructor
+@NoArgsConstructor
 public class CryptoPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,7 +1,9 @@
 package com.cryptotrading.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -9,6 +11,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "transactions", indexes = {
+        @Index(name = "idx_timestamp", columnList = "timestamp"),
+})
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

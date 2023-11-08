@@ -2,12 +2,14 @@ package com.cryptotrading.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wallets", indexes = {
-        @Index(name = "idx_user_id_currency", columnList = "user_id, currency")
+        @Index(name = "idx_user_id_currency", columnList = "user_id")
 })
 @Data
 public class Wallet {
@@ -24,5 +26,9 @@ public class Wallet {
 
     @Column(nullable = false, length = 10)
     private CryptoType type;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime timestamp;
 
 }

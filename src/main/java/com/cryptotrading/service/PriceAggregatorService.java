@@ -18,7 +18,7 @@ public class PriceAggregatorService {
     private final PriceParser priceParser;
 
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedDelayString = "${app.aggregation.interval}")
     public void aggregatePrices() {
         try {
             // Fetch prices from Binance

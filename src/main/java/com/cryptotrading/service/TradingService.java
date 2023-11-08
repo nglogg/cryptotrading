@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class TradingService {
     private final TransactionMapper transactionMapper;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
-    private final PriceService priceService;
+    private final CryptoPriceService priceService;
 
     @Transactional
     public Transaction executeTrade(TradeRequest tradeRequest, boolean isBuy) {
@@ -25,22 +26,27 @@ public class TradingService {
         // e.g., check if user has enough balance for the trade
 
         // Fetch the latest aggregated price
-        CryptoPrice price = priceService.getLastestPrice();
+        Optional<CryptoPrice> price = priceService.findLatestBestPriceBySymbol(tradeRequest.getTradeType());
+        if(price.isEmpty())
+            return null;
         BigDecimal amount = BigDecimal.ZERO;
         if(isBuy){
-            amount = price.getAskPrice();
+            amount = price.get().getAskPrice();
         }
         else{
-            amount = price.getBidPrice();
+            amount = price.get().getBidPrice();
         }
 
         // Update the user's wallet balance
-        User user = userRepository.findById(tradeRequest.getUserId()).get();
+        User user = userRepository.findByGuid(tradeRequest.getUserId()).get();
 
         // Save the trade
         Transaction trade = new Transaction();
         trade = transactionMapper.toTransaction(tradeRequest, amount);
-        user.setBtcBalance(user.getBtcBalance().add(amount));
+        BigDecimal finalAmount = amount;
+        user.getWallets().stream().filter(w -> w.getType().getSymbol().equals(tradeRequest.getTradeType()))
+                .forEach( wallet -> wallet.setBalance(wallet.getBalance().add(finalAmount)));
+
         // Update the wallet in the same transaction
         transactionRepository.save(trade);
         userRepository.save(user);

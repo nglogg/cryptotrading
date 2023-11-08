@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TransactionMapper {
     Transaction toTransaction(TradeRequest request, BigDecimal amount);
 }

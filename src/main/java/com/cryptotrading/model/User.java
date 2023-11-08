@@ -14,14 +14,7 @@ import java.util.Set;
 })
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            type = org.hibernate.id.uuid.UuidGenerator.class
-    )
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(updatable = false, nullable = false)
     private String guid;
 

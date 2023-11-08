@@ -7,9 +7,8 @@ import java.math.BigDecimal;
 
 @Data
 public class TradeRequest {
-    @Id
     private String guid;
-    private Long userId;
+    private String userId;
     private String cryptocurrency;
     private BigDecimal quantity;
     private String tradeType;

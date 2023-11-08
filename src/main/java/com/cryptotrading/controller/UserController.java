@@ -25,8 +25,9 @@ public class UserController {
 
     @GetMapping("/{userId}/wallet/balances")
     public ResponseEntity<Wallet> getWalletBalances(@PathVariable("userId") String userId) {
-        Wallet wallets = userService.getWalletBalances(userId);
-        return new ResponseEntity<>(wallets, HttpStatus.OK);
+        return userService.getWalletBalances(userId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{userId}/transactions")

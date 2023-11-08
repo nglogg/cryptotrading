@@ -21,7 +21,7 @@ This document outlines the implementation details of a crypto trading system dev
 2. **Validation**
     - Apply input validation using @Valid and Hibernate Validator annotations in  DTOs to ensure the data integrity of the requests.
 3. **Database Optimizations**
-    - Use JPA/Hibernate optimizations such as lazy loading, batch fetching, and query tuning to enhance performance with the in-memory database.
+    - Use JPA/Hibernate optimizations such as lazy loading, batch fetching, indexing and query tuning to enhance performance with the in-memory database.
 4. **Transaction Management**
     - Trading transactions are wrapped in database transactions to maintain data integrity.
 5. **Idempotency in Trading**

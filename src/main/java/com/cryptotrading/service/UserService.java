@@ -41,7 +41,7 @@ public class UserService {
 
         return mockUser;
     }
-    private User mockUserDataWithTransactions() {
+    public User mockUserDataWithTransactions() {
         Wallet mockWallet = new Wallet();
         mockWallet.setType(CryptoType.BITCOIN);
         User mockUser = new User(UUID.randomUUID().toString(),"testUser", Set.of(mockWallet), Collections.emptyList());
@@ -67,7 +67,6 @@ public class UserService {
         if (!latestTransactions.hasContent()) {
             return Collections.emptyList();
         }
-        List<Transaction> transactions = latestTransactions.getContent();
-        return transactions;
+        return latestTransactions.getContent();
     }
 }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,10 +21,10 @@ public class CryptoPrice {
     private String symbol;
 
     @Column(nullable = false)
-    private BigDecimal bidPrice;
+    private double bidPrice;
 
     @Column(nullable = false)
-    private BigDecimal askPrice;
+    private double askPrice;
 
     @Column(name = "price_timestamp", nullable = false)
     private LocalDateTime timestamp;

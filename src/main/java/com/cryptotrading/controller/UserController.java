@@ -1,22 +1,14 @@
 package com.cryptotrading.controller;
 
-import com.cryptotrading.mapper.TradeRequestMapper;
-import com.cryptotrading.model.CryptoType;
-import com.cryptotrading.model.Transaction;
-import com.cryptotrading.model.User;
-import com.cryptotrading.model.Wallet;
-import com.cryptotrading.model.dto.TradeRequestDto;
+import com.cryptotrading.model.*;
 import com.cryptotrading.service.TradingService;
 import com.cryptotrading.service.UserService;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -26,8 +18,6 @@ public class UserController {
     private final UserService userService;
 
     private final TradingService tradingService;
-
-    private final TradeRequestMapper tradeRequestMapper;
 
     @GetMapping("/{userId}/wallets/balances")
     public ResponseEntity<Wallet> getWalletBalances(@PathVariable("userId") String userId) {
@@ -42,9 +32,11 @@ public class UserController {
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/trade")
-    public ResponseEntity<Transaction> executeTrade(@RequestBody TradeRequestDto tradeRequestDto) {
-        Transaction transaction = tradingService.executeTrade(tradeRequestMapper.toTradeRequest(tradeRequestDto), true);
+    @PostMapping(path="/trade", consumes = "application/x-www-form-urlencoded")
+    public ResponseEntity<Transaction> executeTrade( TradeRequest tradeRequest) throws IllegalArgumentException {
+        User user = userService.mockUserDataWithTransactions();
+        tradeRequest.setUserId(user.getGuid());
+        Transaction transaction = tradingService.executeTrade(tradeRequest);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 }

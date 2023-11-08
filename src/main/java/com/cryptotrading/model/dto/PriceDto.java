@@ -16,7 +16,7 @@ public class PriceDto {
 
     @NotNull
     @DecimalMin("0.00")
-    private BigDecimal bidPrice; // Price for sell orders
+    private BigDecimal bidPrice; // Price for sale orders
 
     @NotNull
     @DecimalMin("0.00")

@@ -29,7 +29,6 @@ public class CryptoPriceService {
             return Optional.empty();
         }
 
-        Optional<CryptoPrice> latestPrice = Optional.ofNullable(latestPricePage.getContent().get(0));
-        return latestPrice;
+        return Optional.ofNullable(latestPricePage.getContent().get(0));
     }
 }

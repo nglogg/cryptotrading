@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class PriceAggregatorService {
 
 
     @Scheduled(fixedDelayString = "${app.aggregation.interval}")
-    public void aggregatePrices() throws Exception {
+    public void aggregatePrices() throws IllegalArgumentException {
         try {
             log.info("retrieve the pricing from the Binance and Houbi");
             // Fetch prices from Binance
@@ -43,11 +42,10 @@ public class PriceAggregatorService {
             }
 
         } catch (IOException e) {
-            // Handle your errors here
-            throw new Exception("Exception happen while aggregating prices");
+            // Handle  errors
+            throw new IllegalArgumentException("Exception happen while aggregating prices");
         }
     }
 
-    // ... rest of the class
 }
 

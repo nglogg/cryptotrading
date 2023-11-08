@@ -1,12 +1,14 @@
 package com.cryptotrading.parser;
-import com.cryptotrading.model.*;
+
+import com.cryptotrading.model.BinancePrice;
+import com.cryptotrading.model.CryptoPrice;
+import com.cryptotrading.model.CryptoType;
 import com.cryptotrading.model.dto.HoubiPriceDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +28,8 @@ public class PriceParser {
                 .map( b -> new CryptoPrice(
                         null,
                         b.getSymbol().toUpperCase(),
-                        BigDecimal.valueOf(b.getBidPrice()),
-                        BigDecimal.valueOf(b.getAskPrice()),
+                        b.getBidPrice(),
+                        b.getAskPrice(),
                         LocalDateTime.now()))
                 .collect(Collectors.toList());
         if (bestPrice.isEmpty()) {
@@ -43,8 +45,8 @@ public class PriceParser {
                 .map( b -> new CryptoPrice(
                 null,
                 b.getSymbol().toUpperCase(),
-                BigDecimal.valueOf(b.getBid()),
-                BigDecimal.valueOf(b.getAsk()),
+                b.getBid(),
+                b.getAsk(),
                 LocalDateTime.now()))
                 .collect(Collectors.toList());
 
@@ -57,12 +59,10 @@ public class PriceParser {
     public Optional<CryptoPrice> comparePrices(CryptoPrice binancePrice, CryptoPrice huobiPrice) {
         if(binancePrice.getSymbol().equals(huobiPrice.getSymbol())){
             // Compare bid price for SELL order, choose the higher one as it is more beneficial for seller
-            BigDecimal bestBid = binancePrice.getBidPrice().compareTo(huobiPrice.getBidPrice()) > 0 ?
-                    binancePrice.getBidPrice() : huobiPrice.getBidPrice();
+            double bestBid = Math.max(binancePrice.getBidPrice(), huobiPrice.getBidPrice());
 
             // Compare ask price for BUY order, choose the lower one as it is more beneficial for buyer
-            BigDecimal bestAsk = binancePrice.getAskPrice().compareTo(huobiPrice.getAskPrice()) < 0 ?
-                    binancePrice.getAskPrice() : huobiPrice.getAskPrice();
+            double bestAsk = Math.min(binancePrice.getAskPrice(), huobiPrice.getAskPrice());
 
             return Optional.of(new CryptoPrice(
                     null,

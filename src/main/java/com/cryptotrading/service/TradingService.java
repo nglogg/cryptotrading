@@ -6,6 +6,7 @@ import com.cryptotrading.repository.TransactionRepository;
 import com.cryptotrading.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TradingService {
 
     private final TransactionMapper transactionMapper;
@@ -21,37 +23,49 @@ public class TradingService {
     private final CryptoPriceService priceService;
 
     @Transactional
-    public Transaction executeTrade(TradeRequest tradeRequest, boolean isBuy) {
-        // Perform validation checks
-        // e.g., check if user has enough balance for the trade
+    public Transaction executeTrade(TradeRequest tradeRequest) throws IllegalArgumentException {
 
         // Fetch the latest aggregated price
-        Optional<CryptoPrice> price = priceService.findLatestBestPriceBySymbol(tradeRequest.getTradeType());
+        Optional<CryptoPrice> price = priceService.findLatestBestPriceBySymbol(tradeRequest.getType().getSymbol());
         if(price.isEmpty())
             return null;
-        BigDecimal amount = BigDecimal.ZERO;
-        if(isBuy){
-            amount = price.get().getAskPrice();
+        // Perform validation checks
+        // e.g., check if user has enough balance for the trade
+        Optional<User> user = userRepository.findByGuid(tradeRequest.getUserId());
+        if(user.isEmpty())
+            return null;
+        Wallet wallet = user.get().getWallets().stream().filter( w -> w.getType().equals(tradeRequest.getType()))
+                .findFirst()
+                .orElseThrow( () ->
+                        new IllegalArgumentException("User don't have a wallet with type "+tradeRequest.getType().getSymbol()+" for trading")
+                );
+        double oldBalance = wallet.getBalance().doubleValue();
+        double newBalance = getBalanceAfterTrading(tradeRequest, oldBalance, price.get());
+        log.info("New transaction is created. Updated balance is "+newBalance);
+        // Save the trade
+        Transaction newTransaction = transactionMapper.toTransaction(tradeRequest, user.get(), BigDecimal.valueOf((Math.abs(newBalance -oldBalance))));
+        wallet.setBalance( BigDecimal.valueOf(newBalance));
+        userRepository.save(user.get());
+        return transactionRepository.save(newTransaction);
+    }
+
+    private static double getBalanceAfterTrading(TradeRequest tradeRequest, double oldBalance, CryptoPrice price) throws IllegalArgumentException {
+        double balance = oldBalance;
+        double amount = tradeRequest.getQuantity();
+        if(tradeRequest.getTradeType().equals(TradeType.BUY)){
+            log.info("Buy Price is "+price.getAskPrice());
+            amount *= price.getAskPrice();
+            if(balance < amount){
+                throw new IllegalArgumentException("User don't have enough balance for trading. Balance is "+balance);
+            }
+            amount *=-1;
         }
         else{
-            amount = price.get().getBidPrice();
+            log.info("Sell Price is "+price.getBidPrice());
+            amount *= price.getBidPrice();
         }
-
-        // Update the user's wallet balance
-        User user = userRepository.findByGuid(tradeRequest.getUserId()).get();
-
-        // Save the trade
-        Transaction trade = new Transaction();
-        trade = transactionMapper.toTransaction(tradeRequest, amount);
-        BigDecimal finalAmount = amount;
-        user.getWallets().stream().filter(w -> w.getType().getSymbol().equals(tradeRequest.getTradeType()))
-                .forEach( wallet -> wallet.setBalance(wallet.getBalance().add(finalAmount)));
-
-        // Update the wallet in the same transaction
-        transactionRepository.save(trade);
-        userRepository.save(user);
-        // Return the completed trade
-        return trade;
+        balance += amount;
+        return balance;
     }
 }
 

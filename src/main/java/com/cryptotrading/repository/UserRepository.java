@@ -1,7 +1,6 @@
 package com.cryptotrading.repository;
 
 import com.cryptotrading.model.User;
-import com.cryptotrading.model.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

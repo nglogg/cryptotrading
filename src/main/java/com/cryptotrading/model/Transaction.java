@@ -1,5 +1,6 @@
 package com.cryptotrading.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +22,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "guid")
+    @JsonBackReference
+    private User user;
 
     @Column(nullable = false)
     private CryptoType type;
@@ -30,7 +33,6 @@ public class Transaction {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    @Column(nullable = false)
     private BigDecimal price;
 
     @Column(nullable = false, updatable = false)

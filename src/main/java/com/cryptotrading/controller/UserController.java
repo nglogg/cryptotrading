@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.Set;
 
@@ -36,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/transactions")
-    public ResponseEntity<Transaction> getTransactions (@PathVariable("userId") String userId) {
-        Transaction transaction = userService.getTransactions(Long.valueOf(userId));
+    public ResponseEntity<List<Transaction>> getTransactions (@PathVariable("userId") String userId) {
+        List<Transaction> transaction = userService.getTransactions(userId);
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 

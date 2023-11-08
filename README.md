@@ -16,13 +16,18 @@ This document outlines the implementation details of a crypto trading system dev
 - Bitcoin (BTC/USDT)
 
 ### Features
-1. **Buy/Sell Cryptocurrency**
-    - Users can trade Ethereum and Bitcoin using USDT.
-2. **Transaction History**
-    - A comprehensive list of all user transactions can be accessed (size is 10).
-3. **Wallet Balance**
-    - Users can view their current cryptocurrency balances in USDT.
-
+1. **Spring Profiles:**
+    -  Utilize Spring Profiles to separate configuration for different environments (dev, test, prod).
+2. **Validation**
+    - Apply input validation using @Valid and Hibernate Validator annotations in your DTOs to ensure the data integrity of the requests.
+3. **Database Optimizations**
+    - Use JPA/Hibernate optimizations such as lazy loading, batch fetching, and query tuning to enhance performance with the in-memory database.
+4. **Transaction Management**
+    - Trading transactions are wrapped in database transactions to maintain data integrity.
+5. **Idempotency in Trading**
+    - Ensure that trade requests are idempotent to avoid duplicate trades. It's achieved by using a unique identifier for each trade request.
+6. **Data Transfer Efficiency**
+    - When calling external APIs, request only the data service need and process it efficiently to reduce memory and CPU overhead.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.
 - Each user starts with a wallet balance of 50,000 USDT.

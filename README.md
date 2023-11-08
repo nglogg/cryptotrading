@@ -31,7 +31,9 @@ This document outlines the implementation details of a crypto trading system dev
 7. **Layered Architecture**
     - Structure this service using the layered architecture (Controller, Service, Repository) to decouple the code and facilitate testing.
 8. **Error Handling**
-    - Apply global exception handling mechanism with @ControllerAdvice to handle exceptions and return proper HTTP responses.
+    - Apply a global exception handling mechanism with @ControllerAdvice to handle exceptions and return proper HTTP responses.
+9. **Caching**
+    - Apply caching  to reduce the number of calls to database, using Spring's caching abstractions.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.
 - Each user starts with a wallet balance of 50,000 USDT.

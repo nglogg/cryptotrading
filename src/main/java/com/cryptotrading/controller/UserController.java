@@ -22,14 +22,14 @@ public class UserController {
 
     @GetMapping("/{userId}/wallets/balances")
     public ResponseEntity<Wallet> getWalletBalances(@PathVariable("userId") String userId) {
-        return userService.getWalletBalances(userId)
+        return userService.getWalletBalances(userId, 0, 1)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{userId}/transactions")
     public ResponseEntity<List<Transaction>> getTransactions (@PathVariable("userId") String userId) {
-        List<Transaction> transaction = userService.getTransactions(userId);
+        List<Transaction> transaction = userService.getTransactions(userId, 0, 10);
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 

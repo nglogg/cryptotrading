@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wallets", indexes = {
-        @Index(name = "idx_user_id_currency", columnList = "user_id")
+        @Index(name = "idx_user_id_currency", columnList = "user_id"),
+        @Index(name = "idx_timestamp", columnList = "timestamp")
 })
 @Getter
 @Setter

@@ -5,6 +5,8 @@ import com.cryptotrading.repository.TransactionRepository;
 import com.cryptotrading.repository.UserRepository;
 import com.cryptotrading.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,6 +17,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames={"users"})
 public class UserService {
 
     private final WalletRepository walletRepository;
@@ -22,9 +25,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final TransactionRepository transactionRepository;
-    public Optional<Wallet> getWalletBalances(String userId) {
+    @Cacheable(key="#userId")
+    public Optional<Wallet> getWalletBalances(String userId, int page, int size) {
         User mockUser = mockUserData();
-        Page<Wallet> latestWallet = walletRepository.findFirstByUserIdOrderByTimestampDesc(mockUser.getGuid(),  PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "timestamp")));
+        Page<Wallet> latestWallet = walletRepository.findFirstByUserIdOrderByTimestampDesc(mockUser.getGuid(),  PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp")));
         if (!latestWallet.hasContent()) {
             return Optional.empty();
         }
@@ -60,10 +64,11 @@ public class UserService {
         return mockUser;
     }
 
-    public List<Transaction> getTransactions(String userId) {
+    @Cacheable(key="#userId")
+    public List<Transaction> getTransactions(String userId, int page, int size) {
         User mockUser = mockUserDataWithTransactions();
 
-        Page<Transaction> latestTransactions = transactionRepository.findFirstByUserIdOrderByTimestampDesc(mockUser.getGuid(),  PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "timestamp")));
+        Page<Transaction> latestTransactions = transactionRepository.findFirstByUserIdOrderByTimestampDesc(mockUser.getGuid(),  PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp")));
         if (!latestTransactions.hasContent()) {
             return Collections.emptyList();
         }

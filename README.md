@@ -28,6 +28,8 @@ This document outlines the implementation details of a crypto trading system dev
     - Ensure that trade requests are idempotent to avoid duplicate trades. It's achieved by using a unique identifier for each trade request.
 6. **Data Transfer Efficiency**
     - When calling external APIs, request only the data service need and process it efficiently to reduce memory and CPU overhead.
+7. **Layered Architecture**
+    - Structure your application using the layered architecture (Controller, Service, Repository) to decouple the code and facilitate testing.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.
 - Each user starts with a wallet balance of 50,000 USDT.

@@ -33,7 +33,7 @@ This document outlines the implementation details of a crypto trading system dev
 8. **Error Handling**
     - Apply a global exception handling mechanism with @ControllerAdvice to handle exceptions and return proper HTTP responses.
 9. **Caching**
-    - Apply caching  to reduce the number of calls to database, using Spring's caching abstractions.
+    - Apply caching to reduce the number of calls to database and external APIs, using Spring's caching abstractions.
 10. **ShedLock**
     - Apply ShedLock to avoid duplication of scheduler tasks when deployed in multiple instances.
 11. **Sharing H2 database instance in cluster environment**

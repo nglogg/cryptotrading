@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: "20231109-1"  # A unique identifier for the changeset
+      author: "sa"  # Your name or identifier
+      changes:
+        - createTable:
+            tableName: shedlock
+            ifNotExists: true
+            columns:
+              - column:
+                  name: name
+                  type: VARCHAR(64)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: lock_until
+                  type: TIMESTAMP(3)
+              - column:
+                  name: locked_at
+                  type: TIMESTAMP(3)
+              - column:
+                  name: locked_by
+                  type: VARCHAR(255)

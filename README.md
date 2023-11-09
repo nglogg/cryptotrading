@@ -38,6 +38,8 @@ This document outlines the implementation details of a crypto trading system dev
     - Apply ShedLock to avoid duplication of scheduler tasks when deployed in multiple instances.
 11. **Sharing H2 database instance in cluster environment**
     - Set up a TCP server for the H2 database to facilitate the sharing of multiple service instances, thereby reducing memory usages.
+12. **Apply LiquiBase**
+    - Ensure that my database schema management process is robust, flexible, and aligned with my project's needs.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.
 - Each user starts with a wallet balance of 50,000 USDT.

@@ -3,10 +3,12 @@ app:
   aggregation:
     interval: 10000
 spring:
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
   datasource:
     driverClassName: org.h2.Driver
     password: '123'
-    url: jdbc:h2:mem:testdb;INIT=RUNSCRIPT FROM './src/main/resources/create.sql';DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE; #INIT=RUNSCRIPT FROM './src/main/resources/create.sql';
     username: sa
   h2:
     console:
@@ -14,7 +16,7 @@ spring:
       path: /h2-console
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 

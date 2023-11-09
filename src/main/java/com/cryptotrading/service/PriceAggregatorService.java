@@ -6,6 +6,8 @@ import com.cryptotrading.parser.PriceParser;
 import com.cryptotrading.repository.CryptoPriceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+//import net.javacrumbs.shedlock.core.SchedulerLock;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +25,8 @@ public class PriceAggregatorService {
     private final ConfigProperties configProperties;
 
     @Scheduled(fixedDelayString = "${app.aggregation.interval}")
+    @SchedulerLock(name = "AggregatePrices",
+            lockAtMostFor = "PT15S", lockAtLeastFor = "PT10S")
     public void aggregatePrices() throws IllegalArgumentException {
         try {
             log.info("retrieve the pricing from the Binance and Houbi");

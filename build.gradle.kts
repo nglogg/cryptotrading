@@ -28,6 +28,9 @@ dependencies {
 	implementation("javax.validation:validation-api:2.0.1.Final")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
+	implementation("net.javacrumbs.shedlock:shedlock-spring:5.9.1")
+	implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.0")
+
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	implementation("com.h2database:h2:2.2.224")
 	annotationProcessor("org.projectlombok:lombok")

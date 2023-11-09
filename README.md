@@ -36,7 +36,7 @@ This document outlines the implementation details of a crypto trading system dev
     - Apply caching  to reduce the number of calls to database, using Spring's caching abstractions.
 10. **ShedLock**
     - Apply ShedLock to avoid duplication of scheduler tasks when deployed in multiple instances.
-11. **Reuse H2 database in cluster environment**
+11. **Sharing H2 database instance in cluster environment**
     - Set up a TCP server for the H2 database to facilitate the sharing of multiple service instances, thereby reducing memory usages.
 ## Assumptions
 - Users are pre-authenticated and authorized for API access.

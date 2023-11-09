@@ -1,5 +1,6 @@
 package com.cryptotrading.controller;
 
+import com.cryptotrading.exception.TradingException;
 import com.cryptotrading.model.*;
 import com.cryptotrading.service.TradingService;
 import com.cryptotrading.service.UserService;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping(path="/trade", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<Transaction> executeTrade(@Valid TradeRequest tradeRequest) throws IllegalArgumentException {
+    public ResponseEntity<Transaction> executeTrade(@Valid TradeRequest tradeRequest) throws TradingException {
         User user = userService.mockUserDataWithTransactions();
         tradeRequest.setUserId(user.getGuid());
         Transaction transaction = tradingService.executeTrade(tradeRequest);

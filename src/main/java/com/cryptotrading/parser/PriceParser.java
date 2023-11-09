@@ -1,9 +1,11 @@
 package com.cryptotrading.parser;
 
+import com.cryptotrading.exception.PriceAggregatorException;
 import com.cryptotrading.model.BinancePrice;
 import com.cryptotrading.model.CryptoPrice;
 import com.cryptotrading.model.CryptoType;
 import com.cryptotrading.model.dto.HoubiPriceDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,7 @@ public class PriceParser {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public List<CryptoPrice> parseBinanceResponse(String jsonResponse) throws IOException {
+    public List<CryptoPrice> parseBinanceResponse(String jsonResponse) throws PriceAggregatorException, JsonProcessingException {
         BinancePrice[] binancePriceDto = objectMapper.readValue(jsonResponse, BinancePrice[].class);
         List<CryptoPrice> bestPrice = Arrays.stream(binancePriceDto)
                 .filter(datum -> CryptoType.BITCOIN.getSymbol().equalsIgnoreCase(datum.getSymbol()) || CryptoType.ETHEREUM.getSymbol().equalsIgnoreCase(datum.getSymbol()))
@@ -33,12 +35,12 @@ public class PriceParser {
                         LocalDateTime.now()))
                 .collect(Collectors.toList());
         if (bestPrice.isEmpty()) {
-            throw new IllegalStateException("No ETHUSDT or BTCUSDT price data available from Huobi");
+            throw new PriceAggregatorException("No ETHUSDT or BTCUSDT price data available from Huobi");
         }
         return bestPrice;
     }
 
-    public List<CryptoPrice> parseHuobiResponse(String jsonResponse) throws IOException {
+    public List<CryptoPrice> parseHuobiResponse(String jsonResponse) throws PriceAggregatorException, JsonProcessingException {
         HoubiPriceDto huobiPriceDto = objectMapper.readValue(jsonResponse, HoubiPriceDto.class);
         List<CryptoPrice> bestPrice = huobiPriceDto.getData().stream()
                 .filter(datum -> CryptoType.BITCOIN.getSymbol().equalsIgnoreCase(datum.getSymbol()) || CryptoType.ETHEREUM.getSymbol().equalsIgnoreCase(datum.getSymbol()))
@@ -51,7 +53,7 @@ public class PriceParser {
                 .collect(Collectors.toList());
 
         if (bestPrice.isEmpty()) {
-            throw new IllegalStateException("No ETHUSDT or BTCUSDT price data available from Huobi");
+            throw new PriceAggregatorException("No ETHUSDT or BTCUSDT price data available from Huobi");
         }
         return bestPrice;
     }

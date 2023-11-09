@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import com.cryptotrading.exception.TradingException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -23,7 +24,7 @@ public class TradingService {
     private final CryptoPriceService priceService;
 
     @Transactional
-    public Transaction executeTrade(TradeRequest tradeRequest) throws IllegalArgumentException {
+    public Transaction executeTrade(TradeRequest tradeRequest) throws TradingException {
 
         // Fetch the latest aggregated price
         Optional<CryptoPrice> price = priceService.findLatestBestPriceBySymbol(tradeRequest.getType().getSymbol());
@@ -37,7 +38,7 @@ public class TradingService {
         Wallet wallet = user.get().getWallets().stream().filter( w -> w.getType().equals(tradeRequest.getType()))
                 .findFirst()
                 .orElseThrow( () ->
-                        new IllegalArgumentException("User don't have a wallet with type "+tradeRequest.getType().getSymbol()+" for trading")
+                        new TradingException("User don't have a wallet with type "+tradeRequest.getType().getSymbol()+" for trading")
                 );
         double oldBalance = wallet.getBalance().doubleValue();
         double newBalance = getBalanceAfterTrading(tradeRequest, oldBalance, price.get());
@@ -49,14 +50,14 @@ public class TradingService {
         return transactionRepository.save(newTransaction);
     }
 
-    private static double getBalanceAfterTrading(TradeRequest tradeRequest, double oldBalance, CryptoPrice price) throws IllegalArgumentException {
+    private static double getBalanceAfterTrading(TradeRequest tradeRequest, double oldBalance, CryptoPrice price) throws TradingException {
         double balance = oldBalance;
         double amount = tradeRequest.getQuantity();
         if(tradeRequest.getTradeType().equals(TradeType.BUY)){
             log.info("Buy Price is "+price.getAskPrice());
             amount *= price.getAskPrice();
             if(balance < amount){
-                throw new IllegalArgumentException("User don't have enough balance for trading. Balance is "+balance);
+                throw new TradingException("User don't have enough balance for trading. Balance is "+balance);
             }
             amount *=-1;
         }

@@ -3,3 +3,8 @@ spring:
     name: crypto-trading-system
   profiles:
     active: dev
+services:
+    binance:
+      url: https://api.binance.com/api/v3/ticker/bookTicker
+    huobi:
+      url: https://api.huobi.pro/market/tickers

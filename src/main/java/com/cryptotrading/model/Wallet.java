@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "wallets", indexes = {
         @Index(name = "idx_user_id_currency", columnList = "user_id"),
-        @Index(name = "idx_timestamp", columnList = "timestamp")
+        @Index(name = "idx__wallet_timestamp", columnList = "timestamp")
 })
 @Getter
 @Setter
-public class Wallet implements Serializable {
+public class Wallet{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

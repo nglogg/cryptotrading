@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,14 @@ public class PriceAggregatorService {
     private final CryptoPriceRepository cryptoPriceRepository;
     private final PriceParser priceParser;
     private final ConfigProperties configProperties;
+
+    private final CacheManager cacheManager;
+    @Scheduled(fixedDelayString = "${app.cache.clear.interval}")
+    @SchedulerLock(name = "ClearCache", lockAtMostFor = "PT10M", lockAtLeastFor = "PT5M")
+    public void evictAllcachesAtIntervals() {
+        cacheManager.getCacheNames()
+                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+    }
 
     @Scheduled(fixedDelayString = "${app.aggregation.interval}")
     @SchedulerLock(name = "AggregatePrices", lockAtMostFor = "PT15S", lockAtLeastFor = "PT10S")

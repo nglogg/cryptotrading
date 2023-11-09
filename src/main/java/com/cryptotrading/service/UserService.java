@@ -25,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final TransactionRepository transactionRepository;
+
     @Cacheable(key="#userId")
     public Optional<Wallet> getWalletBalances(String userId, int page, int size) {
         User mockUser = mockUserData();

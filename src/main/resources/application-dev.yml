@@ -2,6 +2,9 @@
 app:
   aggregation:
     interval: 10000
+  cache:
+    clear:
+      interval: PT10M
 spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
